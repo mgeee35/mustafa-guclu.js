@@ -47,6 +47,7 @@
         
         container.append(carousel);
         $(".product-detail").after(container);
+        renderFavorites();
     }
     
     function buildCss() {
@@ -73,6 +74,28 @@
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
                 return products;
             });
+    }
+    
+    function getFavorites() {
+        return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+    }
+    
+    function toggleFavorite(id) {
+        let favorites = getFavorites();
+        if (favorites.includes(id)) {
+            favorites = favorites.filter(function(fav) { return fav !== id; });
+        } else {
+            favorites.push(id);
+        }
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+        renderFavorites();
+    }
+    
+    function renderFavorites() {
+        $(".product-card").each(function () {
+            let id = $(this).data("id");
+            $(this).find(".favorite-icon").toggleClass("favorited", getFavorites().includes(id));
+        });
     }
     
     init();
